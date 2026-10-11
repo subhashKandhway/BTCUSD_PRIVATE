@@ -53,6 +53,7 @@ Add to your `opencode.json`:
 ```powershell
 python -m src.tui --snapshot   # dashboard once: chart + chain + paper account
 python -m src.tui              # live refresh every 5s
+python -m src.dashboard        # view-only web terminal: http://localhost:8765
 python -m src.bot --once       # one paper decision cycle
 python -m src.bot --interval 60 --qty 0.01 --sl 0.02 --tp 0.04 --timeframe 1h
 ```
