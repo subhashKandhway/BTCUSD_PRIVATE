@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: btcusd-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: btc
+      POSTGRES_PASSWORD: btc
+      POSTGRES_DB: btcusd
+    ports:
+      - "5433:5432"
+    volumes:
+      - btcusd-pgdata:/var/lib/postgresql/data
+
+volumes:
+  btcusd-pgdata:

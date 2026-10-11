@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "btc-private": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\Subhash Kandhway\\AppData\\Local\\Programs\\Python\\Python313\\python.exe",
+        "C:\\Users\\Subhash Kandhway\\Downloads\\BTCUSD_PRIVATE\\btc_server.py"
+      ],
+      "enabled": true,
+      "environment": {
+        "DATABASE_URL": "postgresql://btc:btc@localhost:5433/btcusd"
+      }
+    }
+  }
+}
