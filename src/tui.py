@@ -107,13 +107,13 @@ def render():
     px, when = price_now()
     head = Panel(f"BTC-USD ${px:,.2f}  ({when})  {datetime.now().strftime('%H:%M:%S')}",
                  title="LIVE" if px else "OFFLINE")
-    body = Layout()
-    body.split_row(
-        Layout(Panel(sparkline(closes("1h")), title="1h closes chart")),
-        Layout(chain_table()),
-    )
     layout = Layout()
-    layout.split_column(Layout(head, size=3), Layout(body), Layout(paper_panel(), size=10))
+    layout.split_column(
+        Layout(head, size=3),
+        Layout(Panel(sparkline(closes("1h")), title="1h closes chart"), size=14),
+        Layout(chain_table()),
+        Layout(paper_panel(), size=10),
+    )
     return layout
 
 
@@ -124,7 +124,11 @@ def main():
     a = ap.parse_args()
     con = Console()
     if a.snapshot:
-        con.print(render())
+        px, when = price_now()
+        con.print(Panel(f"BTC-USD ${px:,.2f}  ({when})", title="LIVE" if px else "OFFLINE"))
+        con.print(Panel(sparkline(closes("1h")), title="1h closes chart"))
+        con.print(chain_table())
+        con.print(paper_panel())
         return
     with Live(render(), console=con, refresh_per_second=1) as live:
         import time
