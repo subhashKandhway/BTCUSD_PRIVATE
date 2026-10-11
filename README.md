@@ -47,3 +47,15 @@ Add to your `opencode.json`:
 - `spot_ticks` — raw trades, auto-pruned hourly to last 7 days (`src/prune.py`, `TICKS_RETENTION_DAYS`)
 - `option_snapshots` — full chain per snapshot, auto-pruned hourly to last 7 days (`OPTIONS_RETENTION_DAYS`)
 - `candles(timeframe, bucket, o/h/l/c, volume, vwap, trades)` — `1h/2h/4h/1D/1W/1M`
+
+## 4. Terminal + paper bot (all PAPER, no real orders)
+
+```powershell
+python -m src.tui --snapshot   # dashboard once: chart + chain + paper account
+python -m src.tui              # live refresh every 5s
+python -m src.bot --once       # one paper decision cycle
+python -m src.bot --interval 60 --qty 0.01 --sl 0.02 --tp 0.04 --timeframe 1h
+```
+
+Strategy: EMA12/26 cross + RSI14 filter on `1h` (or `4h`), long/flat only,
+stop-loss / take-profit exits, $100k starting cash in `paper_state`.

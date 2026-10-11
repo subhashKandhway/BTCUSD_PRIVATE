@@ -188,6 +188,39 @@ def db_status() -> str:
         return f"DB offline: {type(e).__name__}: {e}. Start it: docker compose up -d db"
 
 
+@mcp.tool()
+def paper_status() -> str:
+    """Paper trading account: equity, cash, position, recent trades (never real money)."""
+    try:
+        from src import paper as p
+        s = p.summary()
+        st = s["state"]
+        lines = [f"equity ${s['equity']:,.0f}" if s["equity"] else "equity n/a",
+                 f"cash ${st['cash']:,.0f} pos {st['qty']} BTC entry {st['avg_entry']:.0f}",
+                 f"trades {s['n_trades']} total_pnl ${s['total_pnl']:,.0f}"]
+        for side, q, px, pnl, ts in s["recent"]:
+            lines.append(f"{ts} {side} {q} @ {px:.0f} pnl {pnl}")
+        return "\n".join(lines)
+    except Exception as e:
+        return f"Paper offline: {type(e).__name__}: {e}"
+
+
+@mcp.tool()
+def paper_signal(timeframe: str = "1h") -> str:
+    """Current bot signal (EMA12/26 + RSI14) without trading.
+
+    Args:
+        timeframe: 1h or 1D.
+    """
+    try:
+        from src import strategy
+        tf = timeframe if timeframe in ("1h", "1D") else "1h"
+        sig = strategy.decide(tf)
+        return (f"{sig['action']} @ {sig['price']:.0f} ({tf}): {sig['reason']}")
+    except Exception as e:
+        return f"Signal failed: {type(e).__name__}: {e}"
+
+
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--list-tools":
         import asyncio
