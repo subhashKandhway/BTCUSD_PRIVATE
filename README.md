@@ -44,6 +44,6 @@ Add to your `opencode.json`:
 
 ## 3. Tables (`schema.sql`)
 
-- `spot_ticks` — raw trades, keep short retention (`DELETE WHERE ts < now()-interval '7 days'`)
-- `option_snapshots` — full chain per snapshot
+- `spot_ticks` — raw trades, auto-pruned hourly to last 7 days (`src/prune.py`, `TICKS_RETENTION_DAYS`)
+- `option_snapshots` — full chain per snapshot, auto-pruned hourly to last 7 days (`OPTIONS_RETENTION_DAYS`)
 - `candles(timeframe, bucket, o/h/l/c, volume, vwap, trades)` — `1h/2h/4h/1D/1W/1M`
