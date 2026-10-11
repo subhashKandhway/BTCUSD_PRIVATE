@@ -53,6 +53,17 @@ async def coinbase_loop(product="BTC-USD"):
             await asyncio.sleep(5)
 
 
+async def prune_loop(interval=3600):
+    """Hourly DELETE of rows older than retention so the DB stays small."""
+    from src.prune import prune
+    while True:
+        try:
+            print("prune:", prune())
+        except Exception as e:
+            print("prune failed:", e)
+        await asyncio.sleep(interval)
+
+
 async def deribit_loop(currency="BTC", interval=60):
     """Poll book summary (full chain snapshot) + persist. WS ticker loop optional."""
     while True:
@@ -99,11 +110,13 @@ def once(product="BTC-USD", currency="BTC"):
         print("deribit once failed:", e)
     from src.aggregator import rebuild_from_coinbase
     print("candles upserted:", rebuild_from_coinbase(product))
+    from src.prune import prune
+    print("pruned:", prune())
 
 
 async def main(product, currency):
     db.init_db()
-    await asyncio.gather(coinbase_loop(product), deribit_loop(currency))
+    await asyncio.gather(coinbase_loop(product), deribit_loop(currency), prune_loop())
 
 
 if __name__ == "__main__":
